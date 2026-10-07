@@ -143,6 +143,8 @@ footer a{color:var(--accent-ink)}
 .autor .ig:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .autor .ig svg{width:16px;height:16px;flex:none}
 @media (max-width:560px){.autor{grid-template-columns:1fr;gap:14px;padding:18px}.autor img{width:84px;height:84px}}
+@media (max-width:560px){#rBars .tr,#rEle .tr{height:auto;align-items:flex-start}#rBars .v,#rEle .v{white-space:normal;line-height:1.2}#rBars .v i,#rEle .v i{display:block}}
+#tComp td.n .note{display:block}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style></head><body>
 
@@ -404,10 +406,10 @@ table($('tMun'),[{t:'Município',f:title,w:1},{t:'Votos',n:1,f:fmt},{t:'% dos v�
   $('perdas').innerHTML=ord.slice(-8).reverse().map(chip).join('');
   $('alcance').textContent='Percentuais dos votos válidos para governador. Escala do gráfico: de 0% a 100%.';
   table($('tComp'),[{t:'Município',f:title,w:1},
-    {t:'2022, 1º turno',n:1,f:(v,r)=>pct(v)+' <span class="note">('+fmt(r[5])+')</span>'},
-    {t:'2022, 2º turno',n:1,f:(v,r)=>pct(v)+' <span class="note">('+fmt(r[6])+')</span>'},
-    {t:'2026',n:1,f:(v,r)=>pct(v)+' <span class="note">('+fmt(r[7])+')</span>'},
-    {t:'Variação (2º turno 2022 → 2026)',n:1,f:v=>'<span class="'+(v>0?'pos':v<0?'neg':'')+'">'+pp(v)+'</span>'}],
+    {t:'2022, 1º turno',n:1,f:(v,r)=>pct(v)+'<span class="note">'+fmt(r[5])+' votos</span>'},
+    {t:'2022, 2º turno',n:1,f:(v,r)=>pct(v)+'<span class="note">'+fmt(r[6])+' votos</span>'},
+    {t:'2026',n:1,f:(v,r)=>pct(v)+'<span class="note">'+fmt(r[7])+' votos</span>'},
+    {t:'Variação',n:1,f:v=>'<span class="'+(v>0?'pos':v<0?'neg':'')+'">'+pp(v)+'</span>'}],
     C.map(c=>[c[0],c[2],c[4],c[6],+(c[6]-c[4]).toFixed(2),c[1],c[3],c[5]]),3);
 })();
 
