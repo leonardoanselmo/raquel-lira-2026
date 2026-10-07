@@ -43,7 +43,7 @@ for r in fed:
     cad = cadastro[(r['NR_ZONA'], r['NR_SECAO'])]
     x = por_local[cad['NR_LOCAL_VOTACAO']]
     x.update(nome=cad['NM_LOCAL_VOTACAO'], bairro=cad['NM_BAIRRO'], lat=cad['NR_LATITUDE'], lon=cad['NR_LONGITUDE'])
-    x['secoes'].add(r['NR_SECAO'])
+    x['secoes'].add((r['NR_ZONA'], r['NR_SECAO']))  # a mesma numeração se repete em zonas diferentes
     if r['NR_VOTAVEL'] not in ('95', '96'):
         x['validos'] += int(r['QT_VOTOS'])
     if r['NR_VOTAVEL'] == CANDIDATO:
@@ -61,7 +61,7 @@ for l in saida_locais:
     por_bairro[l['bairro']][1] += l['validos']
 bairros = sorted(([b, a, v, round(100 * a / v, 2)] for b, (a, v) in por_bairro.items()), key=lambda x: -x[1])
 
-print(f'{len(saida_locais)} locais, {len({r["NR_SECAO"] for r in fed})} seções, {len(bairros)} bairros')
+print(f'{len(saida_locais)} locais, {len({(r["NR_ZONA"], r["NR_SECAO"]) for r in fed})} seções, {len(bairros)} bairros')
 salvar_json(dict(validos=validos, brancos=tot['95'], nulos=tot['96'],
                  top=[dict(n=k, nm=n, v=v, p=round(100 * v / validos, 2)) for v, k, n in nominais[:15]],
                  locais=saida_locais, bairros=bairros), 'base.json')

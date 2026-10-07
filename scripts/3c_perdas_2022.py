@@ -4,7 +4,7 @@ Compara o 2º turno de 2022 (Raquel Lyra, PSDB 45, contra Marília Arraes, Solid
 de 2026 (Raquel Lyra, PSD 55, contra João Campos, PSB 40), que foram as votações decisivas de cada ano.
 No resultado, as chaves "iz" são da candidata e "ca" do principal adversário daquele ano.
 
-Cada ano usa o próprio cadastro de locais (1º turno), ligado pela seção. As seções e alguns locais
+Cada ano usa o próprio cadastro de locais (do turno comparado), ligado pela seção. As seções e alguns locais
 mudaram entre as eleições (284 seções em 2022, 292 em 2026), então a comparação principal é por
 bairro. A comparação por local só junta locais com o mesmo código nos dois anos; os demais são
 somados em "locais que mudaram".
@@ -46,7 +46,7 @@ def ano(a):
         cad = cadastro[(r['NR_ZONA'], r['NR_SECAO'])]
         x = loc[cad['NR_LOCAL_VOTACAO']]
         x.update(nome=cad['NM_LOCAL_VOTACAO'], bairro=cad['NM_BAIRRO'], lat=cad.get('NR_LATITUDE', ''), lon=cad.get('NR_LONGITUDE', ''))
-        x['secoes'].add(r['NR_SECAO'])
+        x['secoes'].add((r['NR_ZONA'], r['NR_SECAO']))  # a mesma numeração se repete em zonas diferentes
         cargo, num, votos = r['CD_CARGO'], r['NR_VOTAVEL'], int(r['QT_VOTOS'])
         valido = num not in ('95', '96')
         if (cargo, num) == CAND[a]:

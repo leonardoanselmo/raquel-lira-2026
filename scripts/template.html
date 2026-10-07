@@ -240,6 +240,7 @@ footer a{color:var(--accent-ink)}
   </div>
   <div class="panel" style="display:flex;flex-direction:column;gap:10px">
     <h3>Percentual dos válidos por bairro (20 bairros com mais votos)</h3>
+    <p class="note">Só bairros que aparecem no cadastro de locais nas duas eleições; alguns locais mudaram de bairro no cadastro do TSE entre 2022 e 2026.</p>
     <div class="legend"><span><i style="background:var(--gray-bar);border-radius:50%"></i>2022</span><span><i style="background:var(--accent);border-radius:50%"></i>Raquel 2026</span><span><i style="background:var(--ca);border-radius:50%"></i>Adversário 2026</span><span>Números: % em 2022 → % em 2026</span></div>
     <div class="duo" id="pBairros"></div>
   </div>
@@ -427,7 +428,7 @@ const short=n=>{const p=n.split(' ');const suf=['NETO','FILHO','JUNIOR','JÚNIOR
   const r22=100*T['2022'].iz/T['2022'].val_iz,r26=100*T['2026'].iz/T['2026'].val_iz,a22=100*T['2022'].ca/T['2022'].val_fed,a26=100*T['2026'].ca/T['2026'].val_fed;
   const virou=X.locais.filter(r=>r[9]>r[11]&&r[10]<r[12]).length;
   $('pLede').textContent='No 2º turno de 2022, Raquel teve '+fmt(T['2022'].iz)+' votos em Recife ('+pct(r22)+' dos válidos) contra '+fmt(T['2022'].ca)+' de Marília Arraes ('+pct(a22)+'). Em 2026 teve '+fmt(T['2026'].iz)+' ('+pct(r26)+'), e João Campos, prefeito da cidade, teve '+fmt(T['2026'].ca)+' ('+pct(a26)+'). Dos '+X.locais.length+' locais de votação que existiam nas duas eleições, ela venceu em 2022 e perdeu em 2026 em '+virou+'.';
-  const Bs=[...X.bairros].sort((a,b)=>(b[2]+b[6])-(a[2]+a[6])).slice(0,20);
+  const Bs=X.bairros.filter(b=>b[1]+b[5]>0&&b[2]+b[6]>0).sort((a,b)=>(b[2]+b[6])-(a[2]+a[6])).slice(0,20);  // só bairros com votos nos dois anos (o cadastro de bairros mudou)
   const max=100;
   const pos=v=>(v/max*100).toFixed(2)+'%';
   const cell=(a,b,cls,nm)=>'<div class="tr" title="'+nm+': '+pct(a)+' em 2022, '+pct(b)+' em 2026"><div class="ln" style="left:'+pos(Math.min(a,b))+';width:'+(Math.abs(b-a)/max*100).toFixed(2)+'%"></div><div class="dot d22" style="left:'+pos(a)+'"></div><div class="dot '+cls+'" style="left:'+pos(b)+'"></div><span class="v" style="left:calc('+pos(Math.max(a,b))+' + 9px)">'+p1(a)+' → '+p1(b)+'</span></div>';
