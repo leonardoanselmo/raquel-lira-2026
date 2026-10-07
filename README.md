@@ -12,6 +12,7 @@ O relatório tem:
 - os 185 municípios, com a posição dela e quem disputou a ponta;
 - trajetória de 2010 a 2026: deputada estadual, prefeita de Caruaru e governadora;
 - 2022 × 2026 por município (1º e 2º turno de 2022 contra 2026);
+- onde ela venceu em 2022 e em 2026: municípios que passou a vencer, que deixou de vencer, que venceu nas duas e que perdeu nas duas, com mapa;
 - Caruaru, onde ela foi prefeita, por bairro e por local de votação;
 - Recife 2022 × 2026: a capital, onde a vantagem de 2022 virou derrota, com mapa dos locais de votação;
 - votos em cada seção eleitoral de PE, sem misturar as seções agregadas;

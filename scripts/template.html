@@ -7,7 +7,7 @@
   --accent:#1f56c4;--accent-soft:#e3ebfa;--accent-ink:#163f91;--gray-bar:#b7bec4;
   --up:#2a78d6;--down:#d6553f;--mid:#cfd3d0;
   --m0:#eceeea;--m1:#d4e2f6;--m2:#9fc0ec;--m3:#5f95db;--m4:#2c66c4;--m5:#143f8a;
-  --warn-bg:#fdf3dc;--warn-ink:#7a5208;--warn-line:#ecd29a;--ca:#d9622b;
+  --warn-bg:#fdf3dc;--warn-ink:#7a5208;--warn-line:#ecd29a;--ca:#d9622b;--vg:#14996a;
   --g1:#c9dbf5;--g2:#86ade6;--g3:#3f78d0;--g4:#173f8c;--r1:#f6d3c8;--r2:#eb9d84;--r3:#d6553f;--r4:#97291a;
   --display:"Archivo","Arial Narrow",system-ui,sans-serif;--body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"JetBrains Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
 }
@@ -16,14 +16,14 @@
   --accent:#5b93ee;--accent-soft:#1c2c45;--accent-ink:#a9c6f7;--gray-bar:#56616b;
   --up:#4b92ec;--down:#e8735f;--mid:#3a444d;
   --m0:#222b33;--m1:#1d3354;--m2:#21477e;--m3:#2f64b0;--m4:#5590e3;--m5:#9cc0f5;
-  --warn-bg:#352a12;--warn-ink:#f1d28f;--warn-line:#5e4a1d;--ca:#ef7d47;
+  --warn-bg:#352a12;--warn-ink:#f1d28f;--warn-line:#5e4a1d;--ca:#ef7d47;--vg:#3cc993;
   --g1:#1d3354;--g2:#2f5a9c;--g3:#5590e3;--g4:#a9c8f7;--r1:#4a2018;--r2:#8a3424;--r3:#d6553f;--r4:#f29a83;}}
 :root[data-theme="dark"]{color-scheme:dark;
   --bg:#11161b;--paper:#182027;--ink:#eef1f3;--ink2:#b9c2ca;--muted:#8a949d;--line:#2a343d;--track:#222b33;
   --accent:#5b93ee;--accent-soft:#1c2c45;--accent-ink:#a9c6f7;--gray-bar:#56616b;
   --up:#4b92ec;--down:#e8735f;--mid:#3a444d;
   --m0:#222b33;--m1:#1d3354;--m2:#21477e;--m3:#2f64b0;--m4:#5590e3;--m5:#9cc0f5;
-  --warn-bg:#352a12;--warn-ink:#f1d28f;--warn-line:#5e4a1d;--ca:#ef7d47;
+  --warn-bg:#352a12;--warn-ink:#f1d28f;--warn-line:#5e4a1d;--ca:#ef7d47;--vg:#3cc993;
   --g1:#1d3354;--g2:#2f5a9c;--g3:#5590e3;--g4:#a9c8f7;--r1:#4a2018;--r2:#8a3424;--r3:#d6553f;--r4:#f29a83;}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6;padding-inline:20px;padding-block:0 64px}
@@ -144,6 +144,16 @@ footer a{color:var(--accent-ink)}
 @media (max-width:560px){.autor{grid-template-columns:1fr;gap:14px;padding:18px}.autor img{width:84px;height:84px}}
 @media (max-width:560px){#rBars .tr,#rEle .tr{height:auto;align-items:flex-start}#rBars .v,#rEle .v{white-space:normal;line-height:1.2}#rBars .v i,#rEle .v i{display:block}}
 #tComp td.n .note{display:block}
+.vk{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.vk div{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--paper);display:flex;flex-direction:column;gap:2px}
+.vk b{font-family:var(--display);font-stretch:80%;font-weight:700;font-size:26px;line-height:1.1}
+.vk span{font-size:12.5px;color:var(--ink2);display:flex;align-items:center;gap:6px}
+.vk i{width:12px;height:12px;border-radius:3px;display:inline-block;flex:none}
+#vmap svg{width:100%;height:auto;display:block}
+#vmap path{stroke:var(--paper);stroke-width:.6;cursor:pointer}
+#vmap path:hover{stroke:var(--ink);stroke-width:1.4}
+.vlist{display:flex;flex-wrap:wrap;gap:6px}
+.vlist .chip{font-size:12px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
@@ -206,6 +216,17 @@ footer a{color:var(--accent-ink)}
       <h3>Onde mais caiu</h3><div class="chips" id="perdas"></div>
       <p class="note" style="color:var(--ink2)" id="alcance"></p>
     </div>
+  </div>
+  <div class="panel" style="display:flex;flex-direction:column;gap:12px;margin-top:4px">
+    <h3 id="vTitulo">Onde ela venceu: 2022 × 2026</h3>
+    <p class="note" style="color:var(--ink2);font-size:13.5px" id="vLede"></p>
+    <div class="vk" id="vKpi"></div>
+    <div id="vmap" style="position:relative"><div class="tip" id="vtip"></div></div>
+    <div class="grid2">
+      <div style="display:flex;flex-direction:column;gap:8px"><h3 id="vPassouT"></h3><div class="vlist" id="vPassou"></div></div>
+      <div style="display:flex;flex-direction:column;gap:8px"><h3 id="vDeixouT"></h3><div class="vlist" id="vDeixou"></div></div>
+    </div>
+    <p class="note">Ao lado de cada cidade: o percentual dela no 2º turno de 2022 → em 2026. Fernando de Noronha não aparece no mapa.</p>
   </div>
   <details><summary>Tabela completa 2022 × 2026, com os dois turnos de 2022</summary><div class="tbl-wrap"><table id="tComp" class="resp"></table></div></details>
 </section>
@@ -410,6 +431,33 @@ table($('tMun'),[{t:'Município',f:title,w:1},{t:'Votos',n:1,f:fmt},{t:'% dos v�
     {t:'2026',n:1,f:(v,r)=>pct(v)+'<span class="note">'+fmt(r[7])+' votos</span>'},
     {t:'Variação',n:1,f:v=>'<span class="'+(v>0?'pos':v<0?'neg':'')+'">'+pp(v)+'</span>'}],
     C.map(c=>[c[0],c[2],c[4],c[6],+(c[6]-c[4]).toFixed(2),c[1],c[3],c[5]]),3);
+})();
+
+/* 4b · onde venceu: 2022 × 2026 */
+(function(){
+  const C=D.comp.comp;
+  const cat=r=>{const a=r[4]>50,b=r[9]===1;return a&&b?'ambas':!a&&b?'passou':a&&!b?'deixou':'nenhuma'};
+  const CAT={ambas:['Venceu nas duas','var(--accent)'],passou:['Passou a vencer em 2026','var(--vg)'],deixou:['Deixou de vencer em 2026','var(--down)'],nenhuma:['Perdeu nas duas','var(--gray-bar)']};
+  const cont={ambas:0,passou:0,deixou:0,nenhuma:0};C.forEach(r=>cont[cat(r)]++);
+  const v22=cont.ambas+cont.deixou,v26=cont.ambas+cont.passou,v1=C.filter(r=>r[7]===1).length;
+  $('vTitulo').textContent='Onde ela venceu: de '+v22+' municípios no 2º turno de 2022 para '+v26+' em 2026';
+  $('vLede').textContent='No 2º turno de 2022, contra Marília Arraes, Raquel Lyra venceu em '+v22+' dos '+C.length+' municípios (no 1º turno daquele ano, tinha sido a mais votada em '+v1+'). Em 2026, contra João Campos, venceu em '+v26+'. Ela passou a vencer em '+cont.passou+' cidades e deixou de vencer em '+cont.deixou+'; em '+cont.ambas+' venceu nas duas eleições e em '+cont.nenhuma+' perdeu nas duas.';
+  $('vKpi').innerHTML=Object.keys(CAT).map(k=>'<div><span><i style="background:'+CAT[k][1]+'"></i>'+CAT[k][0]+'</span><b>'+cont[k]+'</b></div>').join('');
+  const byName={};C.forEach(r=>byName[r[0]]=r);
+  const W=900,H=330,FEAT=GEO.features.filter(f=>f.properties.id!=='2605459');
+  const proj=d3.geoIdentity().reflectY(true).fitSize([W,H],{type:'FeatureCollection',features:FEAT}),path=d3.geoPath(proj);
+  const svg=d3.select('#vmap').append('svg').attr('viewBox','0 0 '+W+' '+H).attr('role','img').attr('aria-label','Mapa dos municípios que Raquel Lyra venceu em 2022 e em 2026');
+  const tip=$('vtip');
+  svg.selectAll('path').data(FEAT).join('path').attr('d',path)
+    .style('fill',f=>{const m=D.mapa[f.properties.id],r=m&&byName[m[0]];return r?CAT[cat(r)][1]:'var(--m0)'})
+    .on('mousemove',(e,f)=>{const m=D.mapa[f.properties.id],r=m&&byName[m[0]],rc=$('vmap').getBoundingClientRect();if(!r)return;
+      tip.innerHTML='<b>'+f.properties.name+'</b> · '+CAT[cat(r)][0].toLowerCase()+'<br>2022 (2º turno): '+pct(r[4])+(r[4]>50?' · venceu':' · venceu '+title(r[8]))+'<br>2026: '+pct(r[6])+(r[9]===1?' · venceu':' · venceu '+title(r[10]));
+      tip.style.left=(e.clientX-rc.left)+'px';tip.style.top=(e.clientY-rc.top)+'px';tip.style.opacity=1;tip.style.whiteSpace='nowrap'})
+    .on('mouseleave',()=>tip.style.opacity=0);
+  const chip=r=>'<span class="chip">'+title(r[0])+' <span class="note">'+p1(r[4])+' → '+p1(r[6])+'</span></span>';
+  const pas=C.filter(r=>cat(r)==='passou').sort((a,b)=>b[5]-a[5]),dei=C.filter(r=>cat(r)==='deixou').sort((a,b)=>b[5]-a[5]);
+  $('vPassouT').textContent='Passou a vencer em 2026 ('+pas.length+')';$('vPassou').innerHTML=pas.map(chip).join('');
+  $('vDeixouT').textContent='Deixou de vencer em 2026 ('+dei.length+'), todas para '+[...new Set(dei.map(r=>title(r[10])))].join(', ');$('vDeixou').innerHTML=dei.map(chip).join('');
 })();
 
 /* 5 · Caruaru */

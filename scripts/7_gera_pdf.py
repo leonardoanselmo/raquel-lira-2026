@@ -71,7 +71,8 @@ def hint(y, s='Passe o mouse sobre os elementos para ver os detalhes.'):
     return text(M, y, s, 'R', 8, MUTED) - 4
 
 # ---------- mapa ----------
-def draw_map(x0, y0, w, h, bbox, feats, label_ids=(), cell=2.0):
+def draw_map(x0, y0, w, h, bbox, feats, label_ids=(), cell=2.0, cor=None, dica=None):
+    """cor(f) e dica(f) opcionais trocam a cor e o texto ao passar o mouse de cada município."""
     lon0, lat0, lon1, lat1 = bbox
     k = min(w / (lon1 - lon0), h / (lat1 - lat0))
     mw, mh = (lon1 - lon0) * k, (lat1 - lat0) * k
@@ -83,7 +84,7 @@ def draw_map(x0, y0, w, h, bbox, feats, label_ids=(), cell=2.0):
     c.setStrokeColor(HexColor('#ffffff')); c.setLineWidth(0.4)
     for f in feats:
         m = D['mapa'].get(f['properties']['id'])
-        c.setFillColor(BINS[binof(m[2]) if m else 0])
+        c.setFillColor(cor(f) if cor else BINS[binof(m[2]) if m else 0])
         pth = c.beginPath()
         for poly in polys(f):
             for ring in poly:
@@ -119,7 +120,7 @@ def draw_map(x0, y0, w, h, bbox, feats, label_ids=(), cell=2.0):
                 if cur:
                     f = feats[cur - 1]; m = D['mapa'].get(f['properties']['id'])
                     nm = f['properties']['name']; v26 = m[1] if m else 0
-                    t = f"{nm}: {fmt(v26)} voto{'s' if v26 != 1 else ''}" + (f" ({pct(m[2])} dos válidos, {m[3]}º lugar na cidade)" if v26 else '')
+                    t = dica(f) if dica else f"{nm}: {fmt(v26)} voto{'s' if v26 != 1 else ''}" + (f" ({pct(m[2])} dos válidos, {m[3]}º lugar na cidade)" if v26 else '')
                     tip(x0 + cstart * cell, y0 + h - (r + 1) * cell, (col - cstart) * cell, cell, t)
                 cur, cstart = v, col
 
@@ -305,6 +306,55 @@ for j, (ttl, lst, cor) in enumerate([('Onde mais cresceu', ordv[::-1][:20], UP),
         c.setFont('SB', 8.1); c.setFillColor(cor); c.drawRightString(x + colw, yy, f"{p1(r[4])} → {p1(r[6])}")
         tip(x, yy - 3, colw, 12, f"{title(r[0])}: {pct(r[4])} no 2º turno de 2022 → {pct(r[6])} em 2026 ({pp(r[6] - r[4])})")
         yy -= 13
+footer(); c.showPage()
+
+# ================= PÁGINA: onde venceu, 2022 x 2026 =================
+VG = HexColor('#14996a')
+def cat(r):
+    a, b_ = r[4] > 50, r[9] == 1
+    return 'ambas' if a and b_ else 'passou' if b_ else 'deixou' if a else 'nenhuma'
+CAT = {'ambas': ('Venceu nas duas', ACC), 'passou': ('Passou a vencer em 2026', VG), 'deixou': ('Deixou de vencer em 2026', DOWN), 'nenhuma': ('Perdeu nas duas', GRAY)}
+cont = {k: sum(1 for r in C2 if cat(r) == k) for k in CAT}
+v22 = cont['ambas'] + cont['deixou']; v26 = cont['ambas'] + cont['passou']; v1 = sum(1 for r in C2 if r[7] == 1)
+porNome = {r[0]: r for r in C2}
+y = H - 50
+y = head(y, '4 · Onde ela venceu, 2022 × 2026', f"De {v22} municípios no 2º turno de 2022 para {v26} em 2026",
+         f"No 2º turno de 2022, contra Marília Arraes, Raquel Lyra venceu em {v22} dos {len(C2)} municípios (no 1º turno daquele ano, tinha sido a mais votada em {v1}). Em 2026, contra João Campos, venceu em {v26}. Ela passou a vencer em {cont['passou']} cidades e deixou de vencer em {cont['deixou']}; em {cont['ambas']} venceu nas duas eleições e em {cont['nenhuma']} perdeu nas duas.")
+y = hint(y) - 2
+kw = (CW - 3 * 8) / 4
+for i, k in enumerate(CAT):
+    x = M + i * (kw + 8)
+    c.setStrokeColor(LINE); c.setFillColor(HexColor('#ffffff')); c.setLineWidth(0.8); c.roundRect(x, y - 44, kw, 44, 5, fill=1, stroke=1)
+    c.setFillColor(CAT[k][1]); c.rect(x + 9, y - 15, 9, 9, fill=1, stroke=0)
+    text(x + 23, y - 14, CAT[k][0], 'R', 7.6, INK2); text(x + 9, y - 36, str(cont[k]), 'B', 17, INK)
+    tip(x, y - 44, kw, 44, f"{CAT[k][0]}: {cont[k]} municípios")
+y -= 54
+def cor_v(f):
+    m = D['mapa'].get(f['properties']['id']); r = m and porNome.get(m[0])
+    return CAT[cat(r)][1] if r else BINS[0]
+def dica_v(f):
+    m = D['mapa'].get(f['properties']['id']); r = m and porNome.get(m[0])
+    if not r: return f['properties']['name']
+    return (f"{f['properties']['name']}: {CAT[cat(r)][0].lower()} · 2022 (2º turno): {pct(r[4])}" + ('' if r[4] > 50 else f", venceu {title(r[8])}")
+            + f" · 2026: {pct(r[6])}" + ('' if r[9] == 1 else f", venceu {title(r[10])}"))
+mh = 200
+draw_map(M, y - mh, CW, mh, (-41.40, -9.50, -34.80, -7.25), feats, cell=2.0, cor=cor_v, dica=dica_v)
+y -= mh + 12
+colw = (CW - 20) / 2
+pas = sorted([r for r in C2 if cat(r) == 'passou'], key=lambda r: -r[5]); dei = sorted([r for r in C2 if cat(r) == 'deixou'], key=lambda r: -r[5])
+quem = ', '.join(sorted({title(r[10]) for r in dei}))
+for j, (ttl, lst, cr) in enumerate([(f'Passou a vencer em 2026 ({len(pas)})', pas, VG), (f'Deixou de vencer em 2026 ({len(dei)}), para {quem}', dei, DOWN)]):
+    x = M + j * (colw + 20); yy = y
+    text(x, yy, ttl, 'B', 9.5); yy -= 13
+    sub = colw / 2
+    for i, r in enumerate(lst):
+        cx = x + (i % 2) * sub; cy = yy - (i // 2) * 10.4
+        c.setFont('R', 6.9); c.setFillColor(INK2); nm = title(r[0])
+        while c.stringWidth(nm, 'R', 6.9) > sub - 62: nm = nm[:-2] + '…'
+        c.drawString(cx, cy, nm)
+        c.setFont('SB', 6.9); c.setFillColor(cr); c.drawRightString(cx + sub - 6, cy, f"{p1(r[4])} → {p1(r[6])}")
+        tip(cx, cy - 3, sub - 4, 10, f"{title(r[0])}: {pct(r[4])} no 2º turno de 2022 → {pct(r[6])} em 2026")
+text(M, 40, 'Ao lado de cada cidade: percentual dela no 2º turno de 2022 → em 2026.', 'R', 7.5, MUTED)
 footer(); c.showPage()
 
 # ================= PÁGINA 7: Caruaru =================
